@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import img from "./cryptomonedas.png";
+import Form from "./components/Form";
 
 const Container = styled.div`
   max-width: 900px;
@@ -43,6 +44,7 @@ function App() {
       </div>
       <div>
         <Heading>Quote crypto instantly</Heading>
+        <Form />
       </div>
     </Container>
   );
