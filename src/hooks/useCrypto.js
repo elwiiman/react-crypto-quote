@@ -22,7 +22,6 @@ const Select = styled.select`
 `;
 
 const useCrypto = (label, initialState, options) => {
-  console.log(options);
   // Custom hook state
   const [state, setState] = useState(initialState);
 

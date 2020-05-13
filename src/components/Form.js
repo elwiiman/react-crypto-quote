@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
+import Error from "./Error";
 
 import useCoin from "../hooks/useCoin";
 import useCrypto from "../hooks/useCrypto";
@@ -23,9 +24,10 @@ const Button = styled.input`
   }
 `;
 
-const Form = () => {
+const Form = ({ setMainCoin, setMainCrypto }) => {
   //state
   const [cryptoList, setCryptoList] = useState([]);
+  const [error, setError] = useState(false);
 
   const COINS = [
     { code: "USD", name: "US Dollar" },
@@ -51,8 +53,23 @@ const Form = () => {
     consultAPI();
   }, []);
 
+  //function for submit
+  const quoteCoin = (e) => {
+    e.preventDefault();
+    //validation of two fill fields
+    if (coin === "" || crypto === "") {
+      setError(true);
+      return;
+    }
+
+    setError(false);
+    setMainCoin(coin);
+    setMainCrypto(crypto);
+  };
+
   return (
-    <form>
+    <form onSubmit={quoteCoin}>
+      {error ? <Error message="There was an error" /> : null}
       <SelectCoin />
       <SelectCrypto />
       <Button type="submit" value="Calcular" />

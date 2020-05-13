@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import img from "./cryptomonedas.png";
+import axios from "axios";
 import Form from "./components/Form";
+import Spinner from "./components/Spinner";
+import Quote from "./components/Quote";
 
 const Container = styled.div`
   max-width: 900px;
@@ -37,6 +40,35 @@ const Img = styled.img`
 `;
 
 function App() {
+  const [mainCoin, setMainCoin] = useState("");
+  const [mainCrypto, setMainCrypto] = useState("");
+  const [quote, setQuote] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const quoteCryptoByAPI = async () => {
+      //aavoid execution the first time
+      if (mainCoin === "") return;
+
+      //consult API
+      const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${mainCrypto}&tsyms=${mainCoin}`;
+      const result = await axios.get(url);
+
+      //show spinner
+      setLoading(true);
+
+      //hide spinner
+      setTimeout(() => {
+        //changing state of loading
+        setLoading(false);
+        //setting data got from the API in variable quote
+        setQuote(result.data.DISPLAY[mainCrypto][mainCoin]);
+      }, 3000);
+    };
+
+    quoteCryptoByAPI();
+  }, [mainCoin, mainCrypto]);
+
   return (
     <Container>
       <div>
@@ -44,7 +76,8 @@ function App() {
       </div>
       <div>
         <Heading>Quote crypto instantly</Heading>
-        <Form />
+        <Form setMainCoin={setMainCoin} setMainCrypto={setMainCrypto} />
+        {loading ? <Spinner /> : <Quote quote={quote} mainCoin={mainCoin} />}
       </div>
     </Container>
   );
